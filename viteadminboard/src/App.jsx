@@ -1,28 +1,56 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import React, { useState } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
-import Navbar from "./components/Navbar";
-import Dashboard from "./pages/Dashboard";
-import Calendar from "./pages/Calendar";
-import Kanban from "./pages/Kanban";
-import UsersTable from "./pages/UsersTable";
+import Reports from "./pages/Dashboard/Reports";
+import Users from "./pages/Dashboard/Users";
+import Products from "./pages/Dashboard/Products";
+import Kanban from "./pages/Features/Kanban";
+import Calendar from "./pages/Features/Calendar";
+import Chat from "./pages/Features/Chat";
+import Charts from "./pages/Features/Charts";
+import { ThemeProvider } from "./context/ThemeContext";
+import Header from "./components/Header";
 
-export default function App() {
+function App() {
+  const [activeTab, setActiveTab] = useState("Reports");
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
   return (
-    <div className="flex h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">
-      <BrowserRouter>
-        <Sidebar />
-        <div className="flex flex-col flex-1">
-          <Navbar />
-          <main className="p-4 overflow-y-auto flex-1">
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/calendar" element={<Calendar />} />
-              <Route path="/kanban" element={<Kanban />} />
-              <Route path="/users" element={<UsersTable />} />
-            </Routes>
-          </main>
+    <ThemeProvider>
+      <Router>
+        <div className="flex w-screen h-screen overflow-hidden">
+          {/* Sidebar always mounted, slide it in/out */}
+          <Sidebar
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            sidebarOpen={sidebarOpen}
+            setSidebarOpen={setSidebarOpen}
+          />
+
+          {/* Main content */}
+          <div className="flex flex-col flex-1 overflow-auto bg-black duration-300">
+            {/* Navbar/Header */}
+
+            <Header toggleSidebar={() => setSidebarOpen(true)} />
+
+            {/* Page content */}
+            <main className="p-4 flex-1">
+              <Routes>
+                <Route path="/" element={<Reports />} />
+                <Route path="/reports" element={<Reports />} />
+                <Route path="/users" element={<Users />} />
+                <Route path="/products" element={<Products />} />
+                <Route path="/kanban" element={<Kanban />} />
+                <Route path="/calendar" element={<Calendar />} />
+                <Route path="/chat" element={<Chat />} />
+                <Route path="charts" element={<Charts />} />
+              </Routes>
+            </main>
+          </div>
         </div>
-      </BrowserRouter>
-    </div>
+      </Router>
+    </ThemeProvider>
   );
 }
+
+export default App;
