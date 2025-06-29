@@ -9,6 +9,7 @@ import {
   FaComments,
   FaTimes,
 } from "react-icons/fa";
+import { FcComboChart } from "react-icons/fc";
 
 const links = [
   { name: "Reports", path: "/reports", icon: <FaChartBar /> },
@@ -17,20 +18,15 @@ const links = [
   { name: "Kanban", path: "/kanban", icon: <FaColumns /> },
   { name: "Calendar", path: "/calendar", icon: <FaCalendarAlt /> },
   { name: "Chat", path: "/chat", icon: <FaComments /> },
-  { name: "Charts", path: "charts", icon: null },
+  { name: "Charts", path: "/charts", icon: <FcComboChart /> },
 ];
 
-export default function Sidebar({
-  activeTab,
-  setActiveTab,
-  sidebarOpen,
-  setSidebarOpen,
-}) {
+export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
   const { toggleTheme } = useTheme();
 
   return (
     <aside
-      className={`fixed  top-0 left-0 h-full w-64 bg-[#0f172a] text-white flex flex-col justify-between py-6 px-4 z-40 transform transition-transform duration-300 ${
+      className={`fixed top-0 left-0 h-full w-64 bg-[#0f172a] text-white flex flex-col justify-between py-6 px-4 z-40 transform transition-transform duration-300 ${
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
       }`}
     >
@@ -51,15 +47,10 @@ export default function Sidebar({
               to={link.path}
               className={({ isActive }) =>
                 `flex items-center gap-3 px-4 py-2 rounded transition-colors ${
-                  isActive || activeTab === link.name
-                    ? "bg-purple-600 text-white"
-                    : "hover:bg-gray-700"
+                  isActive ? "bg-purple-600 text-white" : "hover:bg-gray-700"
                 }`
               }
-              onClick={() => {
-                setActiveTab(link.name);
-                setSidebarOpen(false); // close sidebar on mobile click
-              }}
+              onClick={() => setSidebarOpen(false)} // close on click
             >
               {link.icon}
               {link.name}

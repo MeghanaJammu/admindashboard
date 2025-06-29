@@ -1,3 +1,4 @@
+// src/App.jsx
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
@@ -18,8 +19,8 @@ function App() {
   return (
     <ThemeProvider>
       <Router>
-        <div className="flex w-screen h-screen overflow-hidden">
-          {/* Sidebar always mounted, slide it in/out */}
+        <div className="flex w-screen h-screen overflow-hidden relative">
+          {/* Sidebar */}
           <Sidebar
             activeTab={activeTab}
             setActiveTab={setActiveTab}
@@ -28,12 +29,12 @@ function App() {
           />
 
           {/* Main content */}
-          <div className="flex flex-col flex-1 overflow-auto bg-black duration-300">
-            {/* Navbar/Header */}
-
-            <Header toggleSidebar={() => setSidebarOpen(true)} />
-
-            {/* Page content */}
+          <div
+            className={`flex flex-col transition-all duration-300 flex-1 bg-black overflow-auto ${
+              sidebarOpen ? "md:ml-64" : "ml-0"
+            }`}
+          >
+            <Header toggleSidebar={() => setSidebarOpen((prev) => !prev)} />
             <main className="p-4 flex-1">
               <Routes>
                 <Route path="/" element={<Reports />} />
@@ -43,7 +44,7 @@ function App() {
                 <Route path="/kanban" element={<Kanban />} />
                 <Route path="/calendar" element={<Calendar />} />
                 <Route path="/chat" element={<Chat />} />
-                <Route path="charts" element={<Charts />} />
+                <Route path="/charts" element={<Charts />} />
               </Routes>
             </main>
           </div>

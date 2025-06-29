@@ -54,7 +54,7 @@ export default function Reports() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold mb-1">Welcome back, John</h1>
+        <h1 className="text-3xl font-bold mb-1">Welcome back, Meghana</h1>
         <p className="text-gray-400">
           Here's what's happening with your dashboard.
         </p>
