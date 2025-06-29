@@ -1,6 +1,12 @@
-// pages/Features/Kanban.jsx
 import React, { useState, useEffect } from "react";
-import { FaCommentAlt, FaPaperclip, FaPlus, FaTimes } from "react-icons/fa";
+import {
+  FaCommentAlt,
+  FaPaperclip,
+  FaPlus,
+  FaTimes,
+  FaTrash,
+  FaEdit,
+} from "react-icons/fa";
 
 const initialData = {
   todo: [
@@ -84,43 +90,94 @@ const saveToStorage = (data) => {
   }
 };
 
-const KanbanColumn = ({ title, items, onCardClick, onAddCardClick }) => (
+const KanbanColumn = ({
+  title,
+  items,
+  onCardClick,
+  onAddCardClick,
+  onDeleteCard,
+  onEditCard,
+  filterTag,
+}) => (
   <div className="w-full md:w-1/3 px-2">
-    <h2 className="text-xl font-semibold text-white mb-2 flex justify-between items-center">
+    <h2
+      className="text-xl font-semibold mb-2 flex justify-between items-center"
+      style={{ color: "var(--text)" }}
+    >
       {title}
-      <span className="text-xs bg-gray-700 px-2 py-1 rounded-full">
+      <span
+        className="text-xs px-2 py-1 rounded-full"
+        style={{ backgroundColor: "var(--border)", color: "var(--text)" }}
+      >
         {items.length}
       </span>
     </h2>
     <div className="space-y-4">
-      {items.map((item, idx) => (
-        <div
-          key={idx}
-          className="bg-gray-800 p-4 rounded-lg shadow text-white cursor-pointer hover:bg-gray-700"
-          onClick={() => onCardClick(item)}
-        >
-          <h3 className="font-bold mb-1">{item.title}</h3>
-          <p className="text-sm text-gray-400 mb-2">{item.desc}</p>
-          <div className="flex flex-wrap gap-2 mb-2">
-            {item.tags.map((tag, i) => (
-              <span key={i} className="text-xs bg-blue-700 px-2 py-1 rounded">
-                {tag}
+      {items
+        .filter((item) => !filterTag || item.tags.includes(filterTag))
+        .map((item, idx) => (
+          <div
+            key={idx}
+            className="p-4 rounded-lg shadow"
+            style={{ backgroundColor: "var(--card)", color: "var(--text)" }}
+          >
+            <div className="flex justify-between">
+              <h3
+                className="font-bold mb-1 cursor-pointer"
+                onClick={() => onCardClick(item)}
+              >
+                {item.title}
+              </h3>
+              <div className="flex gap-2">
+                <button
+                  onClick={() =>
+                    onEditCard(title.toLowerCase().replace(/ /g, ""), idx)
+                  }
+                  className="text-blue-400 hover:text-blue-600"
+                >
+                  <FaEdit />
+                </button>
+                <button
+                  onClick={() =>
+                    onDeleteCard(title.toLowerCase().replace(/ /g, ""), idx)
+                  }
+                  className="text-red-500 hover:text-red-700"
+                >
+                  <FaTrash />
+                </button>
+              </div>
+            </div>
+            <p className="text-sm mb-2" style={{ color: "var(--muted)" }}>
+              {item.desc}
+            </p>
+            <div className="flex flex-wrap gap-2 mb-2">
+              {item.tags.map((tag, i) => (
+                <span
+                  key={i}
+                  className="text-xs px-2 py-1 rounded"
+                  style={{ backgroundColor: "var(--accent)", color: "#fff" }}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+            <div
+              className="flex items-center gap-4 text-sm"
+              style={{ color: "var(--muted)" }}
+            >
+              <span className="flex items-center gap-1">
+                <FaCommentAlt /> {item.comments}
               </span>
-            ))}
+              <span className="flex items-center gap-1">
+                <FaPaperclip /> {item.files}
+              </span>
+            </div>
           </div>
-          <div className="flex items-center gap-4 text-sm text-gray-300">
-            <span className="flex items-center gap-1">
-              <FaCommentAlt /> {item.comments}
-            </span>
-            <span className="flex items-center gap-1">
-              <FaPaperclip /> {item.files}
-            </span>
-          </div>
-        </div>
-      ))}
+        ))}
       <button
         onClick={() => onAddCardClick(title.toLowerCase().replace(/ /g, ""))}
-        className="w-full flex items-center justify-center gap-2 py-2 bg-gray-700 rounded text-white hover:bg-gray-600"
+        className="w-full flex items-center justify-center gap-2 py-2 rounded"
+        style={{ backgroundColor: "var(--border)", color: "var(--text)" }}
       >
         <FaPlus /> Add card
       </button>
@@ -128,37 +185,10 @@ const KanbanColumn = ({ title, items, onCardClick, onAddCardClick }) => (
   </div>
 );
 
-const TaskModal = ({ task, onClose }) => (
-  <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
-    <div className="bg-white p-6 rounded-lg w-[90%] max-w-lg text-gray-800 relative">
-      <button className="absolute top-3 right-3 text-lg" onClick={onClose}>
-        <FaTimes />
-      </button>
-      <h2 className="text-2xl font-bold mb-2">{task.title}</h2>
-      <p className="text-sm mb-4">{task.desc}</p>
-      <div className="flex flex-wrap gap-2 mb-2">
-        {task.tags.map((tag, idx) => (
-          <span key={idx} className="text-xs bg-blue-700 px-2 py-1 rounded">
-            {tag}
-          </span>
-        ))}
-      </div>
-      <div className="flex items-center gap-4 text-sm text-gray-400">
-        <span className="flex items-center gap-1">
-          <FaCommentAlt /> {task.comments} comments
-        </span>
-        <span className="flex items-center gap-1">
-          <FaPaperclip /> {task.files} files
-        </span>
-      </div>
-    </div>
-  </div>
-);
-
-const AddCardModal = ({ onClose, onAdd, column }) => {
-  const [title, setTitle] = useState("");
-  const [desc, setDesc] = useState("");
-  const [tag, setTag] = useState("");
+const AddCardModal = ({ onClose, onAdd, column, initial = {} }) => {
+  const [title, setTitle] = useState(initial.title || "");
+  const [desc, setDesc] = useState(initial.desc || "");
+  const [tag, setTag] = useState(initial.tags ? initial.tags[0] : "");
 
   const handleSubmit = () => {
     if (title && desc && tag) {
@@ -175,36 +205,55 @@ const AddCardModal = ({ onClose, onAdd, column }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
-      <div className="bg-white dark:bg-gray-900 p-6 rounded-lg w-[90%] max-w-lg text-gray-800 dark:text-white relative">
+      <div
+        className="p-6 rounded-lg w-[90%] max-w-lg relative"
+        style={{ backgroundColor: "var(--card)", color: "var(--text)" }}
+      >
         <button className="absolute top-3 right-3 text-lg" onClick={onClose}>
           <FaTimes />
         </button>
-        <h2 className="text-xl font-semibold mb-4">Add New Task</h2>
+        <h2 className="text-xl font-semibold mb-4">
+          {initial.title ? "Edit Task" : "Add New Task"}
+        </h2>
         <input
-          type="text"
-          className="w-full p-2 mb-2 rounded bg-gray-200 dark:bg-gray-800"
+          className="w-full p-2 mb-2 rounded"
           placeholder="Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          style={{
+            backgroundColor: "var(--input)",
+            color: "var(--text)",
+            border: "1px solid var(--border)",
+          }}
         />
         <textarea
-          className="w-full p-2 mb-2 rounded bg-gray-200 dark:bg-gray-800"
+          className="w-full p-2 mb-2 rounded"
           placeholder="Description"
           value={desc}
           onChange={(e) => setDesc(e.target.value)}
+          style={{
+            backgroundColor: "var(--input)",
+            color: "var(--text)",
+            border: "1px solid var(--border)",
+          }}
         />
         <input
-          type="text"
-          className="w-full p-2 mb-4 rounded bg-gray-200 dark:bg-gray-800"
+          className="w-full p-2 mb-4 rounded"
           placeholder="Tag (e.g., Development)"
           value={tag}
           onChange={(e) => setTag(e.target.value)}
+          style={{
+            backgroundColor: "var(--input)",
+            color: "var(--text)",
+            border: "1px solid var(--border)",
+          }}
         />
         <button
           onClick={handleSubmit}
-          className="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded text-white"
+          className="px-4 py-2 rounded"
+          style={{ backgroundColor: "var(--accent)", color: "#fff" }}
         >
-          Add Task
+          {initial.title ? "Update Task" : "Add Task"}
         </button>
       </div>
     </div>
@@ -216,6 +265,8 @@ export default function Kanban() {
   const [selectedTask, setSelectedTask] = useState(null);
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [addColumn, setAddColumn] = useState("");
+  const [editingTask, setEditingTask] = useState(null);
+  const [filterTag, setFilterTag] = useState("");
 
   useEffect(() => {
     saveToStorage(data);
@@ -223,36 +274,82 @@ export default function Kanban() {
 
   const handleAddCardClick = (column) => {
     setAddColumn(column);
+    setEditingTask(null);
     setAddModalOpen(true);
   };
 
   const handleAddCard = (column, newCard) => {
+    if (editingTask !== null) {
+      setData((prev) => {
+        const copy = [...prev[column]];
+        copy[editingTask] = newCard;
+        return { ...prev, [column]: copy };
+      });
+    } else {
+      setData((prev) => ({ ...prev, [column]: [...prev[column], newCard] }));
+    }
+  };
+
+  const handleDeleteCard = (column, idx) => {
     setData((prev) => ({
       ...prev,
-      [column]: [...prev[column], newCard],
+      [column]: prev[column].filter((_, i) => i !== idx),
     }));
+  };
+
+  const handleEditCard = (column, idx) => {
+    setAddColumn(column);
+    setEditingTask(idx);
+    setAddModalOpen(true);
   };
 
   return (
     <>
+      <div className="mb-4">
+        <select
+          value={filterTag}
+          onChange={(e) => setFilterTag(e.target.value)}
+          style={{
+            backgroundColor: "var(--input)",
+            color: "var(--text)",
+            border: "1px solid var(--border)",
+          }}
+          className="px-3 py-2 rounded w-full md:w-auto"
+        >
+          <option value="">All Tags</option>
+          <option value="Development">Development</option>
+          <option value="Design">Design</option>
+          <option value="Marketing">Marketing</option>
+        </select>
+      </div>
+
       <div className="flex flex-col md:flex-row gap-4">
         <KanbanColumn
           title="To Do"
           items={data.todo}
           onCardClick={setSelectedTask}
           onAddCardClick={handleAddCardClick}
+          onDeleteCard={handleDeleteCard}
+          onEditCard={handleEditCard}
+          filterTag={filterTag}
         />
         <KanbanColumn
           title="In Progress"
           items={data.inprogress}
           onCardClick={setSelectedTask}
           onAddCardClick={handleAddCardClick}
+          onDeleteCard={handleDeleteCard}
+          onEditCard={handleEditCard}
+          filterTag={filterTag}
         />
         <KanbanColumn
           title="Completed"
           items={data.completed}
           onCardClick={setSelectedTask}
           onAddCardClick={handleAddCardClick}
+          onDeleteCard={handleDeleteCard}
+          onEditCard={handleEditCard}
+          filterTag={filterTag}
         />
       </div>
 
@@ -264,6 +361,7 @@ export default function Kanban() {
           onClose={() => setAddModalOpen(false)}
           onAdd={handleAddCard}
           column={addColumn}
+          initial={editingTask !== null ? data[addColumn][editingTask] : {}}
         />
       )}
     </>

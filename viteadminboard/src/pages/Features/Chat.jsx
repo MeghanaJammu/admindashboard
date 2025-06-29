@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaPaperPlane, FaSearch, FaFileAlt } from "react-icons/fa";
 
-// Static user data
 const usersData = [
   {
     id: 1,
@@ -53,7 +52,6 @@ const usersData = [
   },
 ];
 
-// Default chat histories
 const defaultChatHistories = {
   meghana: [
     {
@@ -106,7 +104,6 @@ export default function Chat() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
 
-  // Load messages from localStorage or fallback to default
   useEffect(() => {
     const key = getStorageKey(selectedUser.username.replace("@", ""));
     const saved = localStorage.getItem(key);
@@ -133,24 +130,30 @@ export default function Chat() {
     const updatedMessages = [...messages, newMsg];
     setMessages(updatedMessages);
 
-    // Save to localStorage
     const key = getStorageKey(selectedUser.username.replace("@", ""));
     localStorage.setItem(key, JSON.stringify(updatedMessages));
 
     setInput("");
   };
 
-  const switchUser = (user) => {
-    setSelectedUser(user);
-  };
+  const switchUser = (user) => setSelectedUser(user);
 
   return (
-    <div className="chat-page flex h-[calc(100vh-80px)] bg-[#0f172a] text-white overflow-hidden">
+    <div
+      className="chat-page flex h-[calc(100vh-80px)] overflow-hidden"
+      style={{ backgroundColor: "var(--background)", color: "var(--text)" }}
+    >
       {/* Sidebar */}
-      <aside className="w-full md:w-1/3 lg:w-1/4 border-r border-gray-700 p-4 flex flex-col">
+      <aside
+        className="w-full md:w-1/3 lg:w-1/4 border-r p-4 flex flex-col"
+        style={{ borderColor: "var(--border)", backgroundColor: "var(--card)" }}
+      >
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold">Messages</h2>
-          <button className="bg-purple-600 px-3 py-1 rounded text-sm">
+          <button
+            className="px-3 py-1 rounded text-sm"
+            style={{ backgroundColor: "var(--accent)", color: "#fff" }}
+          >
             New
           </button>
         </div>
@@ -160,7 +163,12 @@ export default function Chat() {
           <input
             type="text"
             placeholder="Search..."
-            className="w-full pl-10 pr-3 py-2 rounded bg-gray-800 focus:outline-none"
+            className="w-full pl-10 pr-3 py-2 rounded focus:outline-none"
+            style={{
+              backgroundColor: "var(--input-bg)",
+              color: "var(--text)",
+              border: "1px solid var(--border)",
+            }}
           />
         </div>
 
@@ -169,32 +177,58 @@ export default function Chat() {
             <div
               key={user.id}
               onClick={() => switchUser(user)}
-              className={`p-3 rounded-lg cursor-pointer hover:bg-gray-700 transition ${
-                selectedUser.id === user.id ? "bg-gray-700" : ""
+              className={`p-3 rounded-lg cursor-pointer transition ${
+                selectedUser.id === user.id
+                  ? "bg-[var(--border)]"
+                  : "hover:bg-[var(--hover)]"
               }`}
+              style={{
+                backgroundColor:
+                  selectedUser.id === user.id ? "var(--hover)" : "transparent",
+              }}
             >
               <div className="flex justify-between items-center mb-1">
                 <div>
                   <p className="font-semibold">{user.name}</p>
-                  <p className="text-sm text-gray-400">{user.username}</p>
+                  <p style={{ color: "var(--text-muted)" }} className="text-sm">
+                    {user.username}
+                  </p>
                 </div>
-                <span className="text-xs text-gray-400">{user.time}</span>
+                <span
+                  className="text-xs"
+                  style={{ color: "var(--text-muted)" }}
+                >
+                  {user.time}
+                </span>
               </div>
-              <p className="text-sm text-gray-400 truncate">{user.message}</p>
+              <p className="text-sm" style={{ color: "var(--text-muted)" }}>
+                {user.message}
+              </p>
             </div>
           ))}
         </div>
       </aside>
 
       {/* Chat Window */}
-      <div className="flex-1 flex flex-col justify-between p-4">
+      <div
+        className="flex-1 flex flex-col justify-between p-4"
+        style={{ backgroundColor: "var(--background)" }}
+      >
         {/* Header */}
-        <div className="flex justify-between items-center border-b border-gray-700 pb-3 mb-3">
+        <div
+          className="flex justify-between items-center pb-3 mb-3 border-b"
+          style={{ borderColor: "var(--border)" }}
+        >
           <div>
             <p className="text-lg font-bold">{selectedUser.name}</p>
-            <p className="text-sm text-gray-400">{selectedUser.username}</p>
+            <p className="text-sm" style={{ color: "var(--text-muted)" }}>
+              {selectedUser.username}
+            </p>
           </div>
-          <button className="bg-pink-600 px-3 py-1 rounded text-sm">
+          <button
+            className="px-3 py-1 rounded text-sm"
+            style={{ backgroundColor: "var(--danger)", color: "#fff" }}
+          >
             Call {selectedUser.name.split(" ")[0]}
           </button>
         </div>
@@ -209,11 +243,13 @@ export default function Chat() {
               }`}
             >
               <div
-                className={`max-w-xs md:max-w-md px-4 py-2 rounded-lg shadow ${
-                  msg.from === "me"
-                    ? "bg-purple-600 text-right"
-                    : "bg-gray-800 text-left"
-                }`}
+                className={`max-w-xs md:max-w-md px-4 py-2 rounded-lg shadow`}
+                style={{
+                  backgroundColor:
+                    msg.from === "me" ? "var(--accent)" : "var(--card)",
+                  color: "#fff",
+                  textAlign: msg.from === "me" ? "right" : "left",
+                }}
               >
                 {msg.image ? (
                   <img
@@ -229,7 +265,10 @@ export default function Chat() {
                 ) : (
                   <p className="text-sm">{msg.text}</p>
                 )}
-                <p className="text-[10px] text-gray-400 mt-1 text-right">
+                <p
+                  className="text-[10px] mt-1"
+                  style={{ color: "var(--text-muted)" }}
+                >
                   {msg.time}
                 </p>
               </div>
@@ -238,17 +277,26 @@ export default function Chat() {
         </div>
 
         {/* Input */}
-        <div className="mt-3 border-t border-gray-700 pt-3 flex items-center gap-2">
+        <div
+          className="mt-3 pt-3 flex items-center gap-2 border-t"
+          style={{ borderColor: "var(--border)" }}
+        >
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
             type="text"
             placeholder="Type a message..."
-            className="flex-1 px-4 py-2 rounded bg-gray-800 text-sm focus:outline-none"
+            className="flex-1 px-4 py-2 rounded text-sm focus:outline-none"
+            style={{
+              backgroundColor: "var(--input-bg)",
+              color: "var(--text)",
+              border: "1px solid var(--border)",
+            }}
           />
           <button
             onClick={handleSend}
-            className="bg-purple-600 px-3 py-2 rounded text-sm hover:bg-purple-700"
+            className="px-3 py-2 rounded hover:opacity-90"
+            style={{ backgroundColor: "var(--accent)", color: "#fff" }}
           >
             <FaPaperPlane />
           </button>

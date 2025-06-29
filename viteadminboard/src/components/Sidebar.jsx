@@ -22,23 +22,25 @@ const links = [
 ];
 
 export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
-  const { toggleTheme } = useTheme();
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <aside
-      className={`fixed top-0 left-0 h-full w-64 bg-[#0f172a] text-white flex flex-col justify-between py-6 px-4 z-40 transform transition-transform duration-300 ${
+      className={`fixed top-0 left-0 h-full w-64 flex flex-col justify-between py-6 px-4 z-40 transform transition-transform duration-300 ${
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
       }`}
+      style={{ backgroundColor: "var(--bg)", color: "var(--text)" }}
     >
       <button
         onClick={() => setSidebarOpen(false)}
-        className="absolute cursor-pointer top-3 right-3 text-white text-xl"
+        className="absolute top-3 right-3 text-xl cursor-pointer"
+        style={{ color: "var(--text)" }}
       >
         <FaTimes />
       </button>
 
       <div>
-        <h1 className="text-2xl font-bold mb-6">DashBoard X</h1>
+        <h1 className="text-2xl font-bold mb-6">DashBoard Lite</h1>
 
         <nav className="flex flex-col gap-2">
           {links.map((link) => (
@@ -47,10 +49,16 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
               to={link.path}
               className={({ isActive }) =>
                 `flex items-center gap-3 px-4 py-2 rounded transition-colors ${
-                  isActive ? "bg-purple-600 text-white" : "hover:bg-gray-700"
+                  isActive
+                    ? "bg-purple-600 text-white"
+                    : "hover:bg-[var(--hover)]"
                 }`
               }
-              onClick={() => setSidebarOpen(false)} // close on click
+              style={({ isActive }) => ({
+                backgroundColor: isActive ? "var(--accent)" : "transparent",
+                color: isActive ? "#fff" : "var(--text)",
+              })}
+              onClick={() => setSidebarOpen(false)}
             >
               {link.icon}
               {link.name}
@@ -59,26 +67,30 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
         </nav>
       </div>
 
-      {/* Theme buttons */}
       <div className="space-y-2 mt-6">
-        <button
-          onClick={() => toggleTheme("dark")}
-          className="w-full py-1 bg-gray-700 rounded"
-        >
-          Dark
-        </button>
-        <button
-          onClick={() => toggleTheme("light")}
-          className="w-full py-1 bg-gray-200 text-black rounded"
-        >
-          Light
-        </button>
-        <button
-          onClick={() => toggleTheme("blue")}
-          className="w-full py-1 bg-blue-600 rounded"
-        >
-          Blue
-        </button>
+        {[
+          "dark",
+          "light",
+          "blue",
+          "green",
+          "red",
+          "cyan",
+          "magenta",
+          "lavender",
+        ].map((mode) => (
+          <button
+            key={mode}
+            onClick={() => toggleTheme(mode)}
+            className="w-full py-1 rounded border text-sm transition capitalize"
+            style={{
+              backgroundColor: theme === mode ? "var(--accent)" : "transparent",
+              color: theme === mode ? "#fff" : "var(--text)",
+              borderColor: "var(--border)",
+            }}
+          >
+            {mode}
+          </button>
+        ))}
       </div>
     </aside>
   );

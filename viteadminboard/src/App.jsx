@@ -1,4 +1,3 @@
-// src/App.jsx
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
@@ -9,7 +8,7 @@ import Kanban from "./pages/Features/Kanban";
 import Calendar from "./pages/Features/Calendar";
 import Chat from "./pages/Features/Chat";
 import Charts from "./pages/Features/Charts";
-import { ThemeProvider } from "./context/ThemeContext";
+import { ThemeProvider } from "./context/ThemeProvider";
 import Header from "./components/Header";
 
 function App() {
@@ -19,7 +18,7 @@ function App() {
   return (
     <ThemeProvider>
       <Router>
-        <div className="flex w-screen h-screen overflow-hidden relative">
+        <div className="flex main-content w-screen h-screen overflow-hidden relative">
           {/* Sidebar */}
           <Sidebar
             activeTab={activeTab}
@@ -30,9 +29,10 @@ function App() {
 
           {/* Main content */}
           <div
-            className={`flex flex-col transition-all duration-300 flex-1 bg-black overflow-auto ${
+            className={`flex flex-col transition-all duration-300 flex-1 overflow-auto ${
               sidebarOpen ? "md:ml-64" : "ml-0"
-            }`}
+            } main-content`}
+            style={{ backgroundColor: "var(--bg)", color: "var(--text)" }}
           >
             <Header toggleSidebar={() => setSidebarOpen((prev) => !prev)} />
             <main className="p-4 flex-1">

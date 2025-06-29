@@ -11,10 +11,8 @@ import {
   Pie,
   Cell,
 } from "recharts";
-
 import { WorldMap } from "react-svg-worldmap";
 
-// Recharts data
 const lineChartData = [
   { name: "Jan", revenue: 100, expenses: 50 },
   { name: "Feb", revenue: 120, expenses: 70 },
@@ -40,7 +38,6 @@ const recentOrders = [
   { order: "#1237", date: "Dec 04, 2025", status: "Paid", total: "$120.00" },
 ];
 
-// Map data
 const countryData = [
   { country: "us", value: 40 },
   { country: "in", value: 25 },
@@ -52,10 +49,10 @@ const COLORS = ["#8884d8", "#82ca9d", "#ffc658"];
 
 export default function Reports() {
   return (
-    <div className="space-y-8">
+    <div className="space-y-8" style={{ color: "var(--text)" }}>
       <div>
         <h1 className="text-3xl font-bold mb-1">Welcome back, Meghana</h1>
-        <p className="text-gray-400">
+        <p style={{ color: "var(--muted)" }}>
           Here's what's happening with your dashboard.
         </p>
       </div>
@@ -66,9 +63,12 @@ export default function Reports() {
           (label, i) => (
             <div
               key={i}
-              className="bg-gray-800 p-4 rounded-lg shadow text-white"
+              className="p-4 rounded-lg shadow"
+              style={{ backgroundColor: "var(--card)" }}
             >
-              <p className="text-sm text-gray-400">{label}</p>
+              <p className="text-sm" style={{ color: "var(--muted)" }}>
+                {label}
+              </p>
               <h2 className="text-2xl font-bold mt-2">
                 {Math.floor(Math.random() * 10000)}+
               </h2>
@@ -78,14 +78,23 @@ export default function Reports() {
       </div>
 
       {/* Revenue Chart */}
-      <div className="bg-gray-800 p-4 rounded-lg shadow w-full">
-        <h2 className="text-lg font-semibold mb-2 text-white">Total Revenue</h2>
+      <div
+        className="p-4 rounded-lg shadow w-full"
+        style={{ backgroundColor: "var(--card)" }}
+      >
+        <h2 className="text-lg font-semibold mb-2">Total Revenue</h2>
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={lineChartData}>
             <CartesianGrid strokeDasharray="3 3" stroke="#444" />
-            <XAxis dataKey="name" stroke="#ccc" />
-            <YAxis stroke="#ccc" />
-            <Tooltip />
+            <XAxis dataKey="name" stroke="var(--muted)" />
+            <YAxis stroke="var(--muted)" />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: "var(--card)",
+                borderColor: "var(--border)",
+                color: "var(--text)",
+              }}
+            />
             <Line
               type="monotone"
               dataKey="revenue"
@@ -105,7 +114,10 @@ export default function Reports() {
       {/* Reports Overview */}
       <div className="grid md:grid-cols-2 gap-6">
         {/* Pie Chart Section */}
-        <div className="bg-gray-800 p-4 rounded-lg shadow text-white">
+        <div
+          className="p-4 rounded-lg shadow"
+          style={{ backgroundColor: "var(--card)" }}
+        >
           <h3 className="text-lg font-semibold mb-2">Users by Device</h3>
           <ResponsiveContainer width="100%" height={250}>
             <PieChart>
@@ -137,11 +149,14 @@ export default function Reports() {
         </div>
 
         {/* Orders Table */}
-        <div className="bg-gray-800 p-4 rounded-lg shadow text-white">
+        <div
+          className="p-4 rounded-lg shadow"
+          style={{ backgroundColor: "var(--card)" }}
+        >
           <h3 className="text-lg font-semibold mb-2">Recent Orders</h3>
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-gray-400">
+              <tr style={{ color: "var(--muted)" }}>
                 <th className="text-left pb-1">Order</th>
                 <th className="text-left pb-1">Date</th>
                 <th className="text-left pb-1">Status</th>
@@ -150,18 +165,21 @@ export default function Reports() {
             </thead>
             <tbody>
               {recentOrders.map((order, idx) => (
-                <tr key={idx} className="border-t border-gray-700">
+                <tr key={idx} style={{ borderTop: "1px solid var(--border)" }}>
                   <td className="py-2">{order.order}</td>
                   <td>{order.date}</td>
                   <td>
                     <span
-                      className={`px-2 py-1 rounded text-xs ${
-                        order.status === "Paid"
-                          ? "bg-green-600"
-                          : order.status === "Pending"
-                          ? "bg-yellow-600"
-                          : "bg-red-600"
-                      }`}
+                      className="px-2 py-1 rounded text-xs"
+                      style={{
+                        backgroundColor:
+                          order.status === "Paid"
+                            ? "#16a34a"
+                            : order.status === "Pending"
+                            ? "#eab308"
+                            : "#dc2626",
+                        color: "#fff",
+                      }}
                     >
                       {order.status}
                     </span>
@@ -175,7 +193,10 @@ export default function Reports() {
       </div>
 
       {/* Users by Country with SVG Map */}
-      <div className="bg-gray-800 p-4 rounded-lg shadow text-white">
+      <div
+        className="p-4 rounded-lg shadow"
+        style={{ backgroundColor: "var(--card)" }}
+      >
         <h3 className="text-lg font-semibold mb-4">Users by Country</h3>
         <div className="w-full overflow-hidden rounded">
           <WorldMap
@@ -183,7 +204,7 @@ export default function Reports() {
             color="cyan"
             size="responsive"
             valueSuffix="%"
-            backgroundColor="#1f2937" // Tailwind gray-800
+            backgroundColor="var(--card)"
           />
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4 text-sm">

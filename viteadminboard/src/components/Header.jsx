@@ -2,11 +2,19 @@ import { FaBars } from "react-icons/fa";
 
 export default function Header({ toggleSidebar }) {
   return (
-    <div className="bg-gray-800 p-4 shadow flex justify-between items-center">
+    <div
+      className="p-4 shadow flex justify-between items-center"
+      style={{
+        backgroundColor: "var(--bg)",
+        color: "var(--text)",
+        borderBottom: "1px solid var(--border)",
+      }}
+    >
       <button
-        className="text-white cursor-pointer text-xl"
+        className="cursor-pointer text-xl"
         type="button"
         onClick={toggleSidebar}
+        style={{ color: "var(--text)" }}
       >
         <FaBars />
       </button>

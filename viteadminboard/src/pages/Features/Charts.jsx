@@ -1,4 +1,3 @@
-// src/pages/Dashboard/Reports.jsx
 import React, { useState } from "react";
 import {
   LineChart,
@@ -10,6 +9,11 @@ import {
   Cell,
   AreaChart,
   Area,
+  Radar,
+  RadarChart,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -17,6 +21,8 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+
+const COLORS = ["#6366f1", "#10b981", "#f59e0b", "#ef4444", "#3b82f6"];
 
 const defaultLineData = [
   { name: "Jan", value: 400 },
@@ -46,121 +52,179 @@ const pieData = [
   { name: "Tablet", value: 25 },
 ];
 
-const COLORS = ["#6366f1", "#10b981", "#f59e0b"];
+const radarData = [
+  { subject: "Marketing", A: 120, B: 110, fullMark: 150 },
+  { subject: "Sales", A: 98, B: 130, fullMark: 150 },
+  { subject: "Tech", A: 86, B: 130, fullMark: 150 },
+  { subject: "HR", A: 99, B: 100, fullMark: 150 },
+];
 
-const Reports = () => {
+export default function Charts() {
   const [filter, setFilter] = useState("yearly");
   const lineData = filter === "monthly" ? monthlyLineData : defaultLineData;
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6" style={{ color: "var(--text)" }}>
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-semibold">Analytics Dashboard</h1>
-          <p className="text-gray-500 dark:text-gray-400">
+          <p style={{ color: "var(--text-muted)" }}>
             Visual insights from your recent data
           </p>
         </div>
-        <div>
-          <select
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-            className="bg-gray-100 dark:bg-gray-700 dark:text-white p-2 rounded"
-          >
-            <option value="yearly">Yearly</option>
-            <option value="monthly">Monthly</option>
-          </select>
+        <select
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+          className="bg-gray-100 dark:bg-gray-700 dark:text-white p-2 rounded"
+          style={{
+            backgroundColor: "var(--card)",
+            color: "var(--text)",
+            border: "1px solid var(--border)",
+          }}
+        >
+          <option value="yearly">Yearly</option>
+          <option value="monthly">Monthly</option>
+        </select>
+      </div>
+
+      {/* Chart Card */}
+      {[
+        {
+          title: `Visitors Trend (${filter})`,
+          chart: (
+            <LineChart data={lineData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+              <XAxis dataKey="name" stroke="var(--text)" />
+              <YAxis stroke="var(--text)" />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "var(--card)",
+                  color: "var(--text)",
+                }}
+              />
+              <Legend />
+              <Line
+                type="monotone"
+                dataKey="value"
+                stroke="#6366f1"
+                strokeWidth={2}
+              />
+            </LineChart>
+          ),
+        },
+        {
+          title: "Revenue Over Time",
+          chart: (
+            <AreaChart data={defaultLineData}>
+              <defs>
+                <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#6366f1" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+              <XAxis dataKey="name" stroke="var(--text)" />
+              <YAxis stroke="var(--text)" />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "var(--card)",
+                  color: "var(--text)",
+                }}
+              />
+              <Area
+                type="monotone"
+                dataKey="value"
+                stroke="#6366f1"
+                fillOpacity={1}
+                fill="url(#colorRev)"
+              />
+            </AreaChart>
+          ),
+        },
+        {
+          title: "User Growth by Page",
+          chart: (
+            <BarChart data={barData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+              <XAxis dataKey="name" stroke="var(--text)" />
+              <YAxis stroke="var(--text)" />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "var(--card)",
+                  color: "var(--text)",
+                }}
+              />
+              <Legend />
+              <Bar dataKey="pv" fill="#6366f1" />
+              <Bar dataKey="uv" fill="#10b981" />
+            </BarChart>
+          ),
+        },
+        {
+          title: "User Device Distribution",
+          chart: (
+            <PieChart>
+              <Pie
+                data={pieData}
+                dataKey="value"
+                nameKey="name"
+                outerRadius={100}
+                label
+              >
+                {pieData.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                  />
+                ))}
+              </Pie>
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "var(--card)",
+                  color: "var(--text)",
+                }}
+              />
+              <Legend />
+            </PieChart>
+          ),
+        },
+        {
+          title: "Department Performance",
+          chart: (
+            <RadarChart data={radarData}>
+              <PolarGrid stroke="var(--border)" />
+              <PolarAngleAxis dataKey="subject" stroke="var(--text)" />
+              <PolarRadiusAxis stroke="var(--text)" />
+              <Radar
+                name="Dept A"
+                dataKey="A"
+                stroke="#6366f1"
+                fill="#6366f1"
+                fillOpacity={0.6}
+              />
+              <Radar
+                name="Dept B"
+                dataKey="B"
+                stroke="#10b981"
+                fill="#10b981"
+                fillOpacity={0.4}
+              />
+              <Legend />
+            </RadarChart>
+          ),
+        },
+      ].map(({ title, chart }, idx) => (
+        <div
+          key={idx}
+          className="rounded-lg shadow p-4"
+          style={{ backgroundColor: "var(--card)" }}
+        >
+          <h2 className="text-lg font-medium mb-2">{title}</h2>
+          <ResponsiveContainer width="100%" height={300}>
+            {chart}
+          </ResponsiveContainer>
         </div>
-      </div>
-
-      {/* Line Chart */}
-      <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
-        <h2 className="text-lg font-medium mb-2">Visitors Trend ({filter})</h2>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={lineData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Line
-              type="monotone"
-              dataKey="value"
-              stroke="#6366f1"
-              strokeWidth={2}
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
-
-      {/* Area Chart */}
-      <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
-        <h2 className="text-lg font-medium mb-2">Revenue Over Time</h2>
-        <ResponsiveContainer width="100%" height={300}>
-          <AreaChart data={defaultLineData}>
-            <defs>
-              <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#6366f1" stopOpacity={0.8} />
-                <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
-              </linearGradient>
-            </defs>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Area
-              type="monotone"
-              dataKey="value"
-              stroke="#6366f1"
-              fillOpacity={1}
-              fill="url(#colorRev)"
-            />
-          </AreaChart>
-        </ResponsiveContainer>
-      </div>
-
-      {/* Bar Chart */}
-      <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
-        <h2 className="text-lg font-medium mb-2">User Growth by Page</h2>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={barData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="pv" fill="#6366f1" />
-            <Bar dataKey="uv" fill="#10b981" />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-
-      {/* Pie Chart */}
-      <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
-        <h2 className="text-lg font-medium mb-2">User Device Distribution</h2>
-        <ResponsiveContainer width="100%" height={300}>
-          <PieChart>
-            <Pie
-              data={pieData}
-              dataKey="value"
-              nameKey="name"
-              outerRadius={100}
-              label
-            >
-              {pieData.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={COLORS[index % COLORS.length]}
-                />
-              ))}
-            </Pie>
-            <Tooltip />
-            <Legend />
-          </PieChart>
-        </ResponsiveContainer>
-      </div>
+      ))}
     </div>
   );
-};
-
-export default Reports;
+}

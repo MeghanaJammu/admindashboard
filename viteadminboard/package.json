@@ -14,7 +14,9 @@
     "@fullcalendar/core": "^6.1.17",
     "@fullcalendar/daygrid": "^6.1.17",
     "@fullcalendar/interaction": "^6.1.17",
+    "@fullcalendar/list": "^6.1.17",
     "@fullcalendar/react": "^6.1.17",
+    "@fullcalendar/timegrid": "^6.1.17",
     "@hello-pangea/dnd": "^18.0.1",
     "@tailwindcss/vite": "^4.1.11",
     "classnames": "^2.5.1",
@@ -27,7 +29,8 @@
     "react-router-dom": "^7.6.3",
     "react-svg-worldmap": "^2.0.0-alpha.16",
     "recharts": "^3.0.2",
-    "tailwindcss": "^4.1.11"
+    "tailwindcss": "^4.1.11",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.29.0",

@@ -5,3 +5,119 @@ body,
 #root {
   height: 100%;
 }
+
+body.theme-dark {
+  --bg: #0f172a;
+  --text: #ffffff;
+  --card: #1e293b;
+  --border: #334155;
+  --input: #1e293b;
+  --accent: #6366f1;
+  --muted: #94a3b8;
+  --success: #16a34a;
+  --danger: #dc2626;
+  --table-header: #1e40af;
+}
+
+body.theme-light {
+  --bg: #f9fafb;
+  --text: #1e293b;
+  --card: #ffffff;
+  --border: #e5e7eb;
+  --input: #ffffff;
+  --accent: #2563eb;
+  --muted: #6b7280;
+  --success: #10b981;
+  --danger: #ef4444;
+  --table-header: #e0f2fe;
+}
+
+body.theme-blue {
+  --bg: #111827;
+  --text: #ffffff;
+  --card: #1f2937;
+  --border: #374151;
+  --input: #1f2937;
+  --accent: #3b82f6;
+  --muted: #9ca3af;
+  --success: #22c55e;
+  --danger: #f87171;
+  --table-header: #1e3a8a;
+}
+
+body.theme-green {
+  --bg: #ecfdf5;
+  --text: #065f46;
+  --card: #d1fae5;
+  --border: #10b981;
+  --input: #d1fae5;
+  --accent: #059669;
+  --muted: #6ee7b7;
+  --success: #059669;
+  --danger: #dc2626;
+  --table-header: #34d399;
+}
+
+body.theme-red {
+  --bg: #fef2f2;
+  --text: #7f1d1d;
+  --card: #fee2e2;
+  --border: #f87171;
+  --input: #fee2e2;
+  --accent: #ef4444;
+  --muted: #fecaca;
+  --success: #10b981;
+  --danger: #b91c1c;
+  --table-header: #fecaca;
+}
+body.theme-cyan {
+  --bg: #0e2f3f;
+  --text: #e0f7fa;
+  --card: #134e61;
+  --border: #1e6d89;
+  --input: #134e61;
+  --accent: #00bcd4;
+  --muted: #80deea;
+  --success: #26c6da;
+  --danger: #ef5350;
+  --table-header: #006064;
+}
+
+body.theme-magenta {
+  --bg: #3a003a;
+  --text: #fce4ec;
+  --card: #5e005e;
+  --border: #880e4f;
+  --input: #5e005e;
+  --accent: #e91e63;
+  --muted: #f8bbd0;
+  --success: #ec407a;
+  --danger: #c62828;
+  --table-header: #880e4f;
+}
+
+body.theme-lavender {
+  --bg: #f3e8ff;
+  --text: #3c2a4d;
+  --card: #e0cfff;
+  --border: #c084fc;
+  --input: #e9d5ff;
+  --accent: #a78bfa;
+  --muted: #d8b4fe;
+  --success: #8b5cf6;
+  --danger: #e11d48;
+  --table-header: #c084fc;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+.main-content {
+  background-color: var(--bg);
+  color: var(--text);
+}
+button:hover {
+  filter: brightness(1.05);
+}

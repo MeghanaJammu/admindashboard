@@ -11,20 +11,14 @@ export default function Products() {
   const [selected, setSelected] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [editProduct, setEditProduct] = useState(null);
-
-  // New: skip saving to localStorage on first mount
   const [hasLoaded, setHasLoaded] = useState(false);
 
-  // Load from localStorage
   useEffect(() => {
     const stored = localStorage.getItem(LOCAL_KEY);
-    if (stored) {
-      setProducts(JSON.parse(stored));
-    }
+    if (stored) setProducts(JSON.parse(stored));
     setHasLoaded(true);
   }, []);
 
-  // Save only after initial load
   useEffect(() => {
     if (hasLoaded) {
       localStorage.setItem(LOCAL_KEY, JSON.stringify(products));
@@ -35,13 +29,11 @@ export default function Products() {
     const isAsc = sortField === field && sortOrder === "asc";
     setSortOrder(isAsc ? "desc" : "asc");
     setSortField(field);
-
     const sorted = [...products].sort((a, b) => {
       if (a[field] < b[field]) return isAsc ? -1 : 1;
       if (a[field] > b[field]) return isAsc ? 1 : -1;
       return 0;
     });
-
     setProducts(sorted);
   };
 
@@ -91,20 +83,33 @@ export default function Products() {
   );
 
   return (
-    <div className="p-4 space-y-6 text-white">
+    <div
+      className="p-4 space-y-6"
+      style={{
+        backgroundColor: "var(--bg)",
+        color: "var(--text)",
+        minHeight: "100vh",
+      }}
+    >
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <h1 className="text-2xl font-bold">Products</h1>
         <div className="flex gap-2">
           <input
             type="text"
             placeholder="Search products..."
-            className="px-3 py-1 rounded bg-gray-800 text-sm"
+            className="px-3 py-1 rounded text-sm"
+            style={{
+              backgroundColor: "var(--input)",
+              color: "var(--text)",
+              border: "1px solid var(--border)",
+            }}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
           <button
             onClick={handleAddProduct}
-            className="bg-purple-600 px-4 py-1 rounded flex items-center gap-2"
+            className="px-4 py-1 rounded flex items-center gap-2"
+            style={{ backgroundColor: "var(--accent)", color: "#fff" }}
           >
             <FaPlus /> Add Product
           </button>
@@ -114,59 +119,56 @@ export default function Products() {
       {isEditing && (
         <form
           onSubmit={handleFormSubmit}
-          className="bg-gray-800 p-4 rounded space-y-2"
+          className="p-4 rounded space-y-2"
+          style={{
+            backgroundColor: "var(--card)",
+            border: "1px solid var(--border)",
+          }}
         >
           <div className="grid md:grid-cols-4 gap-2">
-            <input
-              className="p-2 rounded bg-gray-700"
-              placeholder="Name"
-              value={editProduct.name}
-              onChange={(e) =>
-                setEditProduct({ ...editProduct, name: e.target.value })
-              }
-              required
-            />
-            <input
-              className="p-2 rounded bg-gray-700"
-              placeholder="Category"
-              value={editProduct.category}
-              onChange={(e) =>
-                setEditProduct({ ...editProduct, category: e.target.value })
-              }
-              required
-            />
-            <input
-              className="p-2 rounded bg-gray-700"
-              type="number"
-              placeholder="Stock"
-              value={editProduct.stock}
-              onChange={(e) =>
-                setEditProduct({ ...editProduct, stock: +e.target.value })
-              }
-              required
-            />
-            <input
-              className="p-2 rounded bg-gray-700"
-              type="number"
-              placeholder="Price"
-              value={editProduct.price}
-              onChange={(e) =>
-                setEditProduct({ ...editProduct, price: +e.target.value })
-              }
-              required
-            />
+            {["name", "category", "stock", "price"].map((field, idx) => (
+              <input
+                key={idx}
+                className="p-2 rounded"
+                style={{
+                  backgroundColor: "var(--input)",
+                  color: "var(--text)",
+                  border: "1px solid var(--border)",
+                }}
+                placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+                type={
+                  field === "stock" || field === "price" ? "number" : "text"
+                }
+                value={editProduct[field]}
+                onChange={(e) =>
+                  setEditProduct({
+                    ...editProduct,
+                    [field]:
+                      field === "stock" || field === "price"
+                        ? +e.target.value
+                        : e.target.value,
+                  })
+                }
+                required
+              />
+            ))}
           </div>
           <div className="flex gap-2 mt-2">
-            <button type="submit" className="bg-green-600 px-4 py-1 rounded">
+            <button
+              type="submit"
+              className="px-4 py-1 rounded"
+              style={{ backgroundColor: "var(--success)", color: "#fff" }}
+            >
               Save
             </button>
             <button
+              type="button"
               onClick={() => {
                 setIsEditing(false);
                 setEditProduct(null);
               }}
-              type="button"
-              className="bg-gray-600 px-4 py-1 rounded"
+              className="px-4 py-1 rounded"
+              style={{ backgroundColor: "var(--border)", color: "var(--text)" }}
             >
               Cancel
             </button>
@@ -174,9 +176,17 @@ export default function Products() {
         </form>
       )}
 
-      <div className="overflow-x-auto bg-[#1e293b] rounded-lg shadow">
+      <div
+        className="overflow-x-auto rounded-lg shadow"
+        style={{ backgroundColor: "var(--card)" }}
+      >
         <table className="w-full text-sm">
-          <thead className="bg-gray-800 text-gray-300">
+          <thead
+            style={{
+              backgroundColor: "var(--table-header)",
+              color: "var(--text)",
+            }}
+          >
             <tr>
               <th className="p-2 text-left">
                 <input
@@ -195,7 +205,7 @@ export default function Products() {
               {["name", "category", "stock", "price"].map((field) => (
                 <th
                   key={field}
-                  className="p-2 text-left cursor-pointer hover:text-white"
+                  className="p-2 text-left cursor-pointer"
                   onClick={() => handleSort(field)}
                 >
                   {field.charAt(0).toUpperCase() + field.slice(1)}{" "}
@@ -210,7 +220,8 @@ export default function Products() {
               filteredProducts.map((product) => (
                 <tr
                   key={product.id}
-                  className="border-t border-gray-700 hover:bg-gray-700/20"
+                  style={{ borderTop: "1px solid var(--border)" }}
+                  className="hover:bg-opacity-20"
                 >
                   <td className="p-2">
                     <input
@@ -226,13 +237,13 @@ export default function Products() {
                   <td className="p-2 flex gap-3">
                     <button
                       onClick={() => handleEditClick(product)}
-                      className="text-blue-400 hover:text-blue-600"
+                      style={{ color: "var(--accent)" }}
                     >
                       <FaEdit />
                     </button>
                     <button
                       onClick={() => handleDelete(product.id)}
-                      className="text-red-400 hover:text-red-600"
+                      style={{ color: "var(--danger)" }}
                     >
                       <FaTrashAlt />
                     </button>
@@ -241,7 +252,11 @@ export default function Products() {
               ))
             ) : (
               <tr>
-                <td colSpan="6" className="text-center py-4 text-gray-400">
+                <td
+                  colSpan="6"
+                  className="text-center py-4"
+                  style={{ color: "var(--muted)" }}
+                >
                   No products found.
                 </td>
               </tr>
@@ -251,16 +266,26 @@ export default function Products() {
       </div>
 
       {selected.length > 0 && (
-        <div className="flex justify-between items-center p-2 rounded bg-gray-800">
+        <div
+          className="flex justify-between items-center p-2 rounded"
+          style={{
+            backgroundColor: "var(--card)",
+            border: "1px solid var(--border)",
+          }}
+        >
           <span>{selected.length} selected</span>
           <div className="flex gap-2">
             <button
               onClick={handleBulkDelete}
-              className="bg-red-600 px-3 py-1 rounded text-sm"
+              className="px-3 py-1 rounded text-sm"
+              style={{ backgroundColor: "var(--danger)", color: "#fff" }}
             >
               Delete Selected
             </button>
-            <button className="bg-gray-600 px-3 py-1 rounded text-sm">
+            <button
+              className="px-3 py-1 rounded text-sm"
+              style={{ backgroundColor: "var(--border)", color: "var(--text)" }}
+            >
               Export
             </button>
           </div>
